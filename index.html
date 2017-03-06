@@ -39,20 +39,33 @@
 
     </div>
     <div id="result">
-        <p ng-repeat="comment in comments | filter: query">
+        <p ng-repeat="comment in comments | filter: query" ng-init="comment.feelings={}">
             {{$index+1}}- {{comment.message}}<br>
             pos: {{comment.pos||'-'}}, neg: {{comment.neg||'-'}}, Overall: <b>{{comment.sentiment||'-'}}</b>
-            <select ng-model="feelings" ng-change="setFeeling(feelings,$index)" >
+            <!--<select ng-model="feelings" ng-change="setFeeling(feelings,$index)" >
                 <option value="" disabled selected >Select Feeling</option>
                 <option value="fear">Fear</option>
                 <option value="disgust">Disgust</option>
                 <option value="anger">Anger</option>
                 <option value="happiness">Happiness</option>
                 <option value="sadness">Sadness</option>
-                <option value="surprise">Surprise</option>
+                <option value="surprise" >Surprise</option>
                 <
-            </select>
-            <button ng-click="printComment($index)">Print</button>
+            </select>-->
+            <br>
+            <b>
+            <input type="checkbox" ng-model="comment.feelings.happiness" ng-init="comment.feelings.happiness=false">Happiness
+            <input type="checkbox" ng-model="comment.feelings.surprise" ng-init="comment.feelings.surprise=false">Surprise
+            <input type="checkbox" ng-model="comment.feelings.sadness" ng-init="comment.feelings.sadness=false">Sadness
+            <input type="checkbox" ng-model="comment.feelings.disgust" ng-init="comment.feelings.disgust=false">Disgust
+            <input type="checkbox" ng-model="comment.feelings.fear" ng-init="comment.feelings.fear=false">Fear
+            <input type="checkbox" ng-model="comment.feelings.anger" ng-init="comment.feelings.anger=false">Anger
+            </b>
+
+            <!--<label ng-repeat="role in roles" >
+                <input type="checkbox" checklist-model="user.roles" checklist-value="role" ng-click="toggleSelection(role,$index)"> {{role}}
+            </label>-->
+            <button ng-click="printComment(comment)">Submit</button>
 
         </p>
 
