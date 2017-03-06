@@ -12,6 +12,7 @@ angular.module('compasstic.controllers').controller('mainCtrl',
             };
             $scope.comments = [];
 
+
             $window.fbAsyncInit = function() {
                 FB.init({
                     appId: '1835491116686888',
@@ -25,29 +26,59 @@ angular.module('compasstic.controllers').controller('mainCtrl',
                 FB.login(function(){
                     console.log("Logged in FB.");
                 }, {scope: 'publish_actions'});
+            };
 
+          var commentsAfter = "";
+            $scope.feelings = [];
+
+            $scope.checked=function (cb) {
+                console.warn(cb);
+                //$scope.comments[index].sentiment += cb;
+                $scope.feelings.push(cb.toString());
+                console.info("comment at " +index+" value = " +cb);
+                console.info( "class : "+$scope.comments[index].sentiment);
             };
 
             $scope.getComments = function () {
-                //daily news, T vs H 7976226799_10154668352051800
-                //T and nuc 228735667216_10154233142332217
-                FB.api('/7976226799_10154668352051800', {
-                    fields: 'comments.limit('+$scope.commentsLimit+')'
-                }, function(response) {
-                    $scope.comments = response.comments.data;
+
+                FB.api('/7976226799_10155066114886800', {
+                    fields: 'comments.limit(' + $scope.commentsLimit + ')'+ commentsAfter
+                }, function (response) {
+
+                    response =  response.comments;
+
+                    $scope.comments= $scope.comments.concat(response.data);
+                    
+
                     $scope.$apply();
-                    console.info("Got "+$scope.comments.length+" comment");
+
+                    if (response.paging.next) {
+                        commentsAfter = '.after('+response.paging.cursors.after+')';
+                        $scope.getComments();
+                    }
+                    else{
+                        //console.log($scope.comments);
+                        console.info("Got " + $scope.comments.length + " comment");
+                    }
+
                 });
+
             };
+
             $scope.setFeeling=function (value,index) {
-                $scope.comments[index].sentiment = value.toString();
-                console.info('changed to ' +value.toString()+'index = '+index);
+                $scope.comments[index].sentiment  = value.toString();
 
-            }
+                //console.info('changed to ' +value.toString()+'index = '+index);
 
-            $scope.printComment = function (index) {
-                console.info('Comment : ' + $scope.comments[index].message + ' Class : ' + $scope.comments[index].sentiment);
-            }
+            };
+
+            $scope.printComment = function (comment) {
+                console.info(comment);
+                console.info(comment.feelings);
+
+
+
+            };
             $scope.setQuery = function (query) {
                 query = query.toLowerCase();
 
